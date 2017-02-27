@@ -12,9 +12,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'obj', 'email', 'name', 'comment', 'time_creation'
         )
-        extra_quargs = {
-            'email': {'write_only': True}
-        }
+        # extra_kwargs = {
+        #     'email': {'write_only': True}
+        # }
 
 
 class ModuleSerializer(serializers.ModelSerializer):

@@ -1,6 +1,5 @@
 from rest_framework import generics
-
-# from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 # # Create your views here.
 
@@ -21,6 +20,32 @@ class ListCreateModule(generics.ListCreateAPIView):
 class RetrieveUpdateDestroyModule(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Module.objects.all()
     serializer_class = serializers.ModuleSerializer
+
+
+class ListCreateReview(generics.ListCreateAPIView):
+    queryset = models.Review.objects.all()
+    serializer_class = serializers.ReviewSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(obj_id=self.kwargs.get('module_pk'))
+
+    def perform_create(self, serializer):
+        module = get_object_or_404(
+            models.Module, pk=self.kwargs.get('module_pk')
+        )
+        serializer.save(obj=module)
+
+
+class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
+    queryset = models.Review.objects.all()
+    serializer_class = serializers.ReviewSerializer
+
+    def get_object(self):
+        return get_object_or_404(
+            self.get_queryset(),
+            obj_id=self.kwargs.get('module_pk'),
+            pk=self.kwargs.get('pk')
+        )
 
 
 # class AllModules(APIView):
