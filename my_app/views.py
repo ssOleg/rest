@@ -55,10 +55,22 @@ class ModuleViewSet(viewsets.ModelViewSet):
 
     @detail_route(methods=['GET', ])
     def reviews(self, request, pk=None):
-        modul = self.get_object()
+        # modul = self.get_object()
+        # serializer = serializers.ReviewSerializer(
+        #     modul.reviews.all(),
+        #     many=True
+        # )
+        # return Response(serializer.data)
+        self.pagination_class.page_size = 1
+        reviews = models.Review.objects.filter(obj_id=pk)
+        page = self.paginate_queryset(reviews)
+
+        if page is not None:
+            serializer = serializers.ReviewSerializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
         serializer = serializers.ReviewSerializer(
-            modul.reviews.all(),
-            many=True
+            reviews, many=True
         )
         return Response(serializer.data)
 
