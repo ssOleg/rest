@@ -19,11 +19,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ModuleSerializer(serializers.ModelSerializer):
     """docstring for ClassName."""
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         """docstring for ClassName."""
 
         model = models.Module
         fields = (
-            'id', 'name', 'url'
+            'id', 'name', 'url', 'reviews'
         )
