@@ -19,7 +19,10 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class ModuleSerializer(serializers.ModelSerializer):
     """docstring for ClassName."""
-    reviews = ReviewSerializer(many=True, read_only=True)
+    # reviews = ReviewSerializer(many=True, read_only=True)
+    reviews = serializers.HyperlinkedRelatedField(
+        many=True, read_only=True, view_name='new_api:review-detail'
+    )
 
     class Meta:
         """docstring for ClassName."""
