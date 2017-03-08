@@ -1,10 +1,11 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import detail_route
 
 # # Create your views here.
 
 # from rest_framework.views import APIView
-# from rest_framework.response import Response
+from rest_framework.response import Response
 # from rest_framework import status
 
 
@@ -46,6 +47,25 @@ class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
             obj_id=self.kwargs.get('module_pk'),
             pk=self.kwargs.get('pk')
         )
+
+
+class ModuleViewSet(viewsets.ModelViewSet):
+    queryset = models.Module.objects.all()
+    serializer_class = serializers.ModuleSerializer
+
+    @detail_route(methods=['GET', ])
+    def reviews(self, request, pk=None):
+        modul = self.get_object()
+        serializer = serializers.ReviewSerializer(
+            modul.reviews.all(),
+            many=True
+        )
+        return Response(serializer.data)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = models.Review.objects.all()
+    serializer_class = serializers.ReviewSerializer
 
 
 # class AllModules(APIView):
