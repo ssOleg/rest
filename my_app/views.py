@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets, mixins
+from rest_framework import generics, viewsets, mixins, permissions
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import detail_route
 
@@ -49,7 +49,21 @@ class RetrieveUpdateDestroyReview(generics.RetrieveUpdateDestroyAPIView):
         )
 
 
+class superuserOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+        else:
+            if request.method in ['DELETE', 'GET']:
+                return False
+            return True
+
+
 class ModuleViewSet(viewsets.ModelViewSet):
+    permission_classes = (
+        superuserOnly,
+        permissions.DjangoModelPermissions,
+    )
     queryset = models.Module.objects.all()
     serializer_class = serializers.ModuleSerializer
 
